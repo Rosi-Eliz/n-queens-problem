@@ -238,16 +238,25 @@ int main(int argc, const char * argv[]) {
     int boardSize{0};
     cout<<"Enter your desired board size: ";
     cin>>boardSize;
-    //    for(int i{0}; i < 92; i++)
-    //    {
-    vector<Location*> board = initializeBoard(boardSize);
-    vector<Queen*> queens;
-    int queensToPlace = boardSize;
-    placeQueens(queens, queensToPlace, board, availableMoves(queens, board));
-    printBoard(board);
-    
-    cout<<endl;
-    //    }
+    vector<vector<Location*>> possibleSolutions;
+    while(possibleSolutions.size() < 40)
+    {
+        vector<Location*> board = initializeBoard(boardSize);
+        vector<Queen*> queens;
+        int queensToPlace = boardSize;
+        placeQueens(queens, queensToPlace, board, availableMoves(queens, board));
+        vector<Location*> queensLocations;
+        for(Queen* q: queens)
+        {
+            queensLocations.push_back(q->currentLocation);
+        }
+        if(find(possibleSolutions.begin(), possibleSolutions.end(), queensLocations) == possibleSolutions.end())
+        {
+            possibleSolutions.push_back(queensLocations);
+            printBoard(board);
+            cout<<endl;
+        }
+    }
     return 0;
 }
 
