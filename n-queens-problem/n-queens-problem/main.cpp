@@ -50,62 +50,6 @@ Location* findPosition(vector<Location*> board, int row, int col)
     
 }
 
-vector<Location*> generateQueenMoves(Location* fromLocation, int boardSize, vector<Location*> board)
-{
-    vector<Location*> availableMoves;
-    for(int i{0}; i < boardSize; i++)
-    {
-        //y-Axis
-        if(i != fromLocation->row)
-        {
-            Location* location = findPosition(board, i, fromLocation->column);
-            availableMoves.push_back(location);
-        }
-        
-        //x-Axis
-        if(i != fromLocation->column)
-        {
-            Location* location = findPosition(board, fromLocation->row, i);
-            availableMoves.push_back(location);
-        }
-    }
-    //Diagonals
-    int row = fromLocation->row;
-    int column = fromLocation->column;
-    int count{0};
-    while(row < boardSize || column < boardSize)
-    {
-        count++;
-        row++;
-        column++;
-        
-        Location* diagonal = findPosition(board, row, column);
-        if(diagonal != nullptr)
-            availableMoves.push_back(diagonal);
-        int location270reflectionRow = row + (count * -2) ;
-        diagonal = findPosition(board, location270reflectionRow, column);
-        if(location270reflectionRow >= 0 && diagonal != nullptr)
-            availableMoves.push_back(diagonal);
-    }
-    row = fromLocation->row;
-    column = fromLocation->column;
-    count = 0;
-    while(row < boardSize || column >= 0)
-    {
-        count++;
-        row++;
-        column--;
-        Location* diagonal = findPosition(board, row, column);
-        if(diagonal != nullptr)
-            availableMoves.push_back(diagonal);
-        int location270reflectionRow = row  + (-2 * count);
-        diagonal = findPosition(board, location270reflectionRow, column);
-        if(location270reflectionRow >= 0 && diagonal != nullptr)
-            availableMoves.push_back(diagonal);
-    }
-    return availableMoves;
-}
-
 bool locationIsValidFor(int row, int column, int boardSize)
 {
     return row < boardSize && row >= 0 && column < boardSize && column >= 0;
@@ -148,7 +92,6 @@ bool hasConflictFor(Location *location, vector<Queen*>& queens, vector<Location 
             adjacentLocations.push({row + scaleCoefficients.first, column + scaleCoefficients.second, scaleCoefficientsIndex});
         }
     }
-    
     return false;
 };
 
@@ -190,12 +133,8 @@ bool placeQueens(vector<Queen*>& queens, int remainingQueens, vector<Location*>&
     shuffle(viableLocations.begin(), viableLocations.end(), random_device());
     for(Location* location : viableLocations)
     {
-        if(location->row == 6 && location->column == 5 && queens.size() == 7) {
-            cout<<"";
-        }
         if(!hasConflictFor(location, queens, board))
         {
-            
             Queen* newQueen = new Queen(location);
             location->queen = newQueen;
             queens.push_back(newQueen);
@@ -207,7 +146,6 @@ bool placeQueens(vector<Queen*>& queens, int remainingQueens, vector<Location*>&
             {
                 return true;
             }
-            
             else
             {
                 queens.pop_back();
@@ -217,7 +155,6 @@ bool placeQueens(vector<Queen*>& queens, int remainingQueens, vector<Location*>&
         }
     }
     return false;
-    
 }
 
 void printBoard(vector<Location*> board)
@@ -239,7 +176,10 @@ int main(int argc, const char * argv[]) {
     cout<<"Enter your desired board size: ";
     cin>>boardSize;
     vector<vector<Location*>> possibleSolutions;
-    while(possibleSolutions.size() < 40)
+    // Modify the maxNumbeOfSolutions parameter for more solutions
+    // Displays the distinct solutions
+    int maxNumbeOfSolutions = 12;
+    while(possibleSolutions.size() < maxNumbeOfSolutions)
     {
         vector<Location*> board = initializeBoard(boardSize);
         vector<Queen*> queens;
